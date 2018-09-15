@@ -60,8 +60,6 @@ class SentencestDatasource(DataSource):
         for i in range(len(self.text_int)):
             inps = self.text_int[i][:self.max_length-1]
             targ = self.text_int[i][1:self.max_length]
-
-            print(inps, targ)
             self.input_text.append(inps)
             self.target_text.append(targ)
 
