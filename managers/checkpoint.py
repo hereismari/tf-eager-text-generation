@@ -11,3 +11,6 @@ class CheckpointManager(object):
     
     def save(self):
         self.checkpoint.save(file_prefix=self.checkpoint_prefix)
+    
+    def restore_last(self):
+        self.checkpoint.restore(tf.train.latest_checkpoint(self.checkpoint_dir))

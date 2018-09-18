@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+import os
+
 # Import TensorFlow >= 1.10 and enable eager execution
 import tensorflow as tf
 # Note: Once you enable eager execution, it cannot be disabled. 
@@ -19,10 +22,14 @@ def main():
                           to_lower=args.to_lower)
 
     model = models.load(ds.vocab_size, embedding_dim=args.embedding_dim, units=args.units)
-    trainer = Trainer(datasource=ds, model=model, optimizer=tf.train.AdamOptimizer(),
-                      checkpoint_dir=args.checkpoint_dir, checkpoint_prefix=args.checkpoint_prefix)
 
-    trainer.train(epochs=args.epochs, verbose=args.verbose)
+    checkpoint_prefix = os.path.splitext(os.path.basename(args.text_path))[0]
+    trainer = Trainer(datasource=ds, model=model, optimizer=tf.train.AdamOptimizer(),
+                      checkpoint_dir=args.checkpoint_dir, checkpoint_prefix=checkpoint_prefix)
+    
+    trainer.train(epochs=args.epochs, verbose=args.verbose,
+                  num_char_generate=args.num_char_generate,
+                  start_string=args.start_string, temperature=args.temperature)
 
 if __name__ == '__main__':
     main()

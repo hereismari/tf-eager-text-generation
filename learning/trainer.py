@@ -1,8 +1,8 @@
 import time
 import numpy as np
-import random
 import string
 import os
+import random
 
 import tensorflow as tf
 
@@ -16,13 +16,14 @@ class Trainer(object):
         self.checkpoint = CheckpointManager(checkpoint_dir, checkpoint_prefix,
                                             optimizer, model)
     
+    def restore_last_checkpoint(self):
+        self.checkpoint.restore_last()
 
-    def train(self, epochs=10, verbose=True):
+    def train(self, epochs=10, verbose=True, num_char_generate=30, start_string=None, temperature=1.0):
         for epoch in range(epochs):
             start = time.time()
             # Initializing the hidden state at the start of every epoch
             hidden = self.model.reset_states()
-            
             loss = 0
             for (batch, (inp, target)) in enumerate(self.ds.dataset):
                 with tf.GradientTape() as tape:
@@ -47,16 +48,32 @@ class Trainer(object):
                 self.checkpoint.save()
 
             print ('Epoch {} Loss {:.4f}'.format(epoch+1, loss))
-            print('Time taken for epoch {}: {} sec\n'.format(epoch+1, time.time() - start))
-            self.eval()
-    
-    def eval(self):
-        # number of characters to generate
-        num_generate = 30
+            print ('Time taken for epoch {}: {} sec\n'.format(epoch+1, time.time() - start))
+            print (self.sample(num_char_generate, start_string, temperature))
 
-        # You can change the start string to experiment
-        start_string = 'a'
-        
+
+    def sample(self, num_char_generate=30, start_string=None, temperature=1.0):
+        '''
+            Generates text similar to the training text.
+
+            Args:
+                num_char_generate: number of characters to geneterate.
+                start_string: input string to start generating text,
+                    if None it will be one random valid character.
+                temperature: low temperature results in more predictable text,
+                    higher temperatures results in more surprising text.
+            Returns:
+                A string composed by the start_string + RNN generated text.
+        '''
+        # if start_string is none we choose a random starting char
+        if start_string is None:
+            start_string = random.choice(self.ds.unique)
+        else:
+            for char in start_string:
+                if char not in self.ds.char2idx:
+                    print ('Invalid start string')
+                    return
+
         # Converting our start string to numbers(vectorizing!) 
         input_eval = [self.ds.char2idx[s] for s in start_string]
         input_eval = tf.expand_dims(input_eval, 0)
@@ -64,14 +81,9 @@ class Trainer(object):
         # empty string to store our results
         text_generated = ''
 
-        # low temperatures results in more predictable text.
-        # higher temperatures results in more surprising text
-        # experiment to find the best setting
-        temperature = 0.8
-
         # hidden state shape == (batch_size, number of rnn units); here batch size == 1
         hidden = [tf.zeros((1, self.model.units))]
-        for i in range(num_generate):
+        for i in range(num_char_generate):
             predictions, hidden = self.model(input_eval, hidden)
 
             # using a multinomial distribution to predict the word returned by the model
@@ -84,5 +96,4 @@ class Trainer(object):
 
             text_generated += self.ds.idx2char[predicted_id]
 
-        # try_plot(start_string + text_generated)
-        print(start_string + text_generated)
+        return ((start_string + text_generated).replace('<pad>', ''))

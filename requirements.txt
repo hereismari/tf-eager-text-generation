@@ -2,3 +2,6 @@ tensorflow-gpu>=1.10
 tensorflow>=1.10
 unidecode
 numpy
+bs4
+requests
+nltk

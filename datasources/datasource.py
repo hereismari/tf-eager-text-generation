@@ -14,11 +14,14 @@ class DataSource(object):
         assert batch_size > 0, 'Invalid batch size %s' % batch_size
         self.batch_size = batch_size
 
-        self.to_lower=to_lower
+        self.to_lower = to_lower
 
     def prepare_dataset(self):
         # Read text path
         self.text = unidecode.unidecode(open(self.text_path).read())
+        # To lower
+        if self.to_lower:
+            self.text = self.text.lower()
         # Unique contains all the unique characters in the file
         self.unique = sorted(set(self.text))
         # Creating a mapping from unique characters to indices
