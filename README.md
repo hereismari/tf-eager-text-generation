@@ -9,6 +9,48 @@ You can give your own text file in order to train a text generator :D.
 1. run: `python train.py --text-path <path to txt>`, check all the available arguments with `python train.py --help`.
 2. run: `python sample.py --text-path <path to txt>`, **including all arguments passed during train**.
 
+
+```
+usage: train.py [-h] --text-path TEXT_PATH [--text-type {full-text,sentences}]
+                [--max-length MAX_LENGTH] [--buffer-size BUFFER_SIZE]
+                [--batch-size BATCH_SIZE] [--to-lower] [--model {gru}]
+                [--embedding-dim EMBEDDING_DIM] [--units UNITS]
+                [--checkpoint-dir CHECKPOINT_DIR] [--epochs EPOCHS]
+                [--verbose] [--num-char-generate NUM_CHAR_GENERATE]
+                [--start-string START_STRING] [--temperature TEMPERATURE]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --text-path TEXT_PATH
+                        Path to text file.
+  --text-type {full-text,sentences}
+                        Type of text senteces = consider each line of file as
+                        a piece of text. full-text = consider text file as a
+                        single long text.
+  --max-length MAX_LENGTH
+                        Max length of a piece of text used to train model.
+  --buffer-size BUFFER_SIZE
+                        Buffer size to shuffle dataset.
+  --batch-size BATCH_SIZE
+                        Batch size for training.
+  --to-lower            Convert all chars to lower case.
+  --model {gru}         RNN cell, for now only GRU is available.
+  --embedding-dim EMBEDDING_DIM
+                        Embedding dimension in model.
+  --units UNITS         RNN units.
+  --checkpoint-dir CHECKPOINT_DIR
+                        Path to save models checkpoints.
+  --epochs EPOCHS       Train epochs.
+  --verbose             Generate text as it train.
+  --num-char-generate NUM_CHAR_GENERATE
+                        Number of chars to generate as it train.
+  --start-string START_STRING
+                        Start string to generate text. If None a random char
+                        will be used instead.
+  --temperature TEMPERATURE
+                        Higher = more creative text, lower = boring text.
+```
+
 ### Bands and Artists
 
 1. [get dataset](datasets/bands/)
