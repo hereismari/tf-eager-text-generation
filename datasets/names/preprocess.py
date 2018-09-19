@@ -6,7 +6,7 @@ path = 'nomes-censos-ibge.csv'
 output_file = open('names.txt', 'w+')
 
 
-csv_reader = csv.reader(open(path, 'r', encoding='latin-1'), delimiter=';')
+csv_reader = csv.reader(open(path, 'r', encoding='latin-1'), delimiter=',')
 next(csv_reader)
 
 for row in csv_reader:

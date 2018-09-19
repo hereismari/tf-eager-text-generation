@@ -12,7 +12,9 @@ class SentencestDatasource(DataSource):
     def prepare_dataset(self):
         # Read text path
         self.text = open(self.text_path).readlines()
-        
+        if self.to_lower:
+            self.text = [sentence.lower() for sentence in self.text]
+
         # Unique contains all the unique characters in the file
         self.chars = set()
         for sentence in self.text:
