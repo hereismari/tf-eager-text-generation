@@ -43,8 +43,8 @@ class Trainer(object):
                     print ('Epoch {} Batch {} Loss {:.4f}'.format(epoch+1,
                                                                   batch,
                                                                   loss))
-            # saving (checkpoint) the model every 5 epochs
-            if (epoch + 1) % 5 == 0:
+            # saving (checkpoint) the model every 2 epochs
+            if (epoch + 1) % 2 == 0:
                 self.checkpoint.save()
 
             print ('Epoch {} Loss {:.4f}'.format(epoch+1, loss))
